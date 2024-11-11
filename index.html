@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directional Angle Calculator</title>
+    <style>
+        .s {
+            width: 50px;
+        }
+
+        .x-s {
+            width: 35px;
+        }
+    </style>
+</head>
+
+<body>
+    Схилення на <input type="number" name="year" id="year" class="s" value="2023">
+    <input type="number" name="gradus" id="gradus" value="8" class="x-s">&#176;
+    <input type="number" name="minute" id="minute" value="11" class="x-s">'
+    <select name="direction" id="direction">
+        <option value="east">Сх</option>
+        <option value="west">Зах</option>
+    </select>
+    <br>
+
+    <body>
+        Річне схилення
+        <input type="number" name="yearlyGradus" id="yearlyGradus" value="0" class="x-s">&#176;
+        <input type="number" name="yearlyMinute" id="yearlyMinute" value="6" class="x-s">'
+        <select name="yearlyDirection" id="yearlyDirection">
+            <option value="east">Сх</option>
+            <option value="west">Зах</option>
+        </select>
+        <br>
+        <math>
+            <mrow>
+                <munderover>
+                    <mo>α</mo>
+                    <mrow>
+                        <mn>а</mn>
+                    </mrow>
+                    <mrow>
+                        <mn>м</mn>
+                    </mrow>
+                </munderover>
+            </mrow>
+        </math>
+        = <input type="number" name="aplhaB" id="aplhaB" class="s">
+        <br><br>
+        <math>
+            <mrow>
+                <munderover>
+                    <mo>α</mo>
+                    <mrow>
+                        <mn>б</mn>
+                    </mrow>
+                </munderover>
+            </mrow>
+        </math>
+        = <span id="alphaAMValue"></span>
+        <br>
+        П = <span id="mistakeValue"></span>
+        <br>
+        αа = <span id="alphaAValue"></span>
+
+        <br>
+        <br>
+        <button id="submit">Calculate</button>
+
+
+    </body>
+
+    <script>
+        document.getElementById('submit').addEventListener('click', handleCalculate);
+
+
+        function handleCalculate(e) {
+            let year = +document.getElementById('year').value;
+            let gradus = +document.getElementById('gradus').value;
+            let minute = +document.getElementById('minute').value;
+            let aplhaB = +document.getElementById('aplhaB').value;
+            let yearlyGradus = +document.getElementById('yearlyGradus').value;
+            let yearlyMinute = +document.getElementById('yearlyMinute').value;
+            let direction = document.getElementById('direction').value;
+            let yearlyDirection = document.getElementById('yearlyDirection').value;
+
+            let alphaAM = aplhaB > 3000 ? aplhaB - 3000 : aplhaB + 3000;
+            document.getElementById('alphaAMValue').innerText = aplhaB + ` ${aplhaB > 3000 ? '-' : '+'} ` + 3000 + ' = ' + alphaAM;
+
+            let yearsPassed = new Date().getFullYear() - year;
+            let inclinationInMinutes = (direction == 'west' ? -1 : 1) * (gradus * 60 + minute) +
+                (yearsPassed * (yearlyDirection == 'west' ? -1 : 1) * (yearlyGradus * 60 + yearlyMinute));
+
+            let mistake = inclinationInMinutes / 3.6;
+
+            document.getElementById('mistakeValue').innerText =
+                (direction == 'west' ? '-' : '') + formatGragusAndMinute(gradus, minute) + ' + '
+                + '(' + yearsPassed + ' * ' + (yearlyDirection == 'west' ? '-' : '') + formatGragusAndMinute(yearlyGradus, yearlyMinute) + ') = '
+                
+                + formatGragusAndMinute(parseInt(inclinationInMinutes / 60), inclinationInMinutes - parseInt(inclinationInMinutes / 60) * 60) + ' = '
+                + inclinationInMinutes + '\' / 3.6\' = ' + mistake + ' = ' + Math.round(mistake);
+
+            mistake = Math.round(mistake);
+
+            let alphaA = alphaAM + (direction == 'west' ? -1 : 1) * mistake;
+            let alphaAInMinutes = alphaA * 3.6;
+            let alphaAInGraduses = alphaAInMinutes / 60;
+            
+            document.getElementById('alphaAValue').innerText = 
+            alphaAM + (direction == 'west' ? ' - (' : ' + ') + mistake + (direction == 'west' ? ')' : '') + ' = ' + alphaA + ' * 3.6\' = '
+            + alphaAInMinutes + '\' / 60° = ' + alphaAInGraduses + '° = ' + alphaAInGraduses.toFixed(1) + '°';
+
+
+
+
+
+        }
+
+        function formatGragusAndMinute(gradus, minute) {
+            return gradus + '°' + minute.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + '\'';
+        }
+
+
+    </script>
+
+</html>
