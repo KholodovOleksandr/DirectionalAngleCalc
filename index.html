@@ -7,83 +7,318 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Directional Angle Calculator</title>
     <style>
+        /* General Reset */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            line-height: 1.5;
+            background-color: #f9f9f9;
+        }
+
+        /* Row Layout */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Grouping */
+        .group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Input and Select Styles */
+        input,
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
         .s {
-            width: 50px;
+            width: 60px;
         }
 
         .x-s {
-            width: 35px;
+            width: 45px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+            outline: none;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 10px 16px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            background-color: #004085;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Superscript Style */
+        sup {
+            margin-left: -8px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .row {
+                flex-direction: column;
+                /* Stack rows vertically */
+            }
+
+            .group {
+                flex-wrap: wrap;
+                /* Allow grouping elements to wrap on smaller screens */
+            }
+
+            button {
+                margin: 20px auto 0;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .row.magnetic-declination {
+                display: flex;
+                flex-direction: row;
+                /* Keep Section 1 and 2 side by side on larger screens */
+
+            }
+
+            .group {
+                flex-wrap: nowrap;
+            }
+        }
+
+        /* Switch Container */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        /* Hide Default Checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* Slider (Switch Background) */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 50px;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Slider Knob */
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+        }
+
+        /* Checked State */
+        .switch input:checked+.slider {
+            background-color: #007bff;
+        }
+
+        .switch input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Focus State */
+        .switch input:focus+.slider {
+            box-shadow: 0 0 2px #007bff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .switch {
+                width: 40px;
+                height: 22px;
+            }
+
+            .slider:before {
+                height: 18px;
+                width: 18px;
+            }
+
+            .slider {
+                top: -1px;
+                right: -7px;
+            }
         }
     </style>
 </head>
 
 <body>
-    Схилення на <input type="number" name="year" id="year" class="s" value="2023">p -
-    <input type="number" name="gradus" id="gradus" value="8" class="x-s">&#176;
-    <input type="number" name="minute" id="minute" value="11" class="x-s">'
-    <select name="direction" id="direction">
-        <option value="east">Сх</option>
-        <option value="west">Зах</option>
-    </select>
-    <br>
+    <div class="row magnetic-declination">
+        <div class="group">
+            <span>Схилення на</span>
+            <input type="number" name="year" id="year" class="s" value="2023" />
+            <span>p: </span>
+        </div>
 
-    Річне схилення
-    <input type="number" name="yearlyGradus" id="yearlyGradus" value="0" class="x-s">&#176;
-    <input type="number" name="yearlyMinute" id="yearlyMinute" value="6" class="x-s">'
-    <select name="yearlyDirection" id="yearlyDirection">
-        <option value="east">Сх</option>
-        <option value="west">Зах</option>
-    </select>
-    <br>
+        <div class="group">
+            <input type="number" name="gradus" id="gradus" value="8" class="x-s" />
+            <span>°</span>
+            <input type="number" name="minuta" id="minuta" value="11" class="x-s" />
+            <span>′</span>
+            <select name="direction" id="direction">
+                <option value="east">Сх</option>
+                <option value="west">Зах</option>
+            </select>
+        </div>
+    </div>
 
-    αаm = <input type="number" name="aplhaB" id="aplhaB" class="s">
+    <div class="row">
+        <div class="group">
+            <span>Річне схилення</span>
+            <input type="number" name="yearlyGradus" id="yearlyGradus" value="0" class="x-s" />
+            <span>°</span>
+            <input type="number" name="yearlyMinuta" id="yearlyMinuta" value="6" class="x-s" />
+            <span>′</span>
+            <select name="yearlyDirection" id="yearlyDirection">
+                <option value="east">Сх</option>
+                <option value="west">Зах</option>
+            </select>
+        </div>
+    </div>
 
-    <br><br>
-    αб = <span id="alphaAMValue"></span>
+    <!-- αб -->
+    <div class="row">
+        <div class="group">
+            <var>α<sub>б</sub></var>
+            <span> = </span>
+            <input type="number" name="aplhaB" id="aplhaB" class="s" />
+        </div>
+    </div>
 
-    <br>
-    <br>
-    П = <span id="mistakeValue"></span>
-    <br>
-    <br>
-    αа = <span id="alphaAValue"></span>
+    <!-- Details Result -->
+    <div id="details" style="display: none;">
+        <div class="row">
+            <div>
+                <var>α<sub>a</sub><sup>m</sup></var> = <span id="alphaAMView"></span>
+            </div>
+        </div>
 
-    <br>
-    <br>
-    <button id="submit">Calculate</button>
+        <div class="row">
+            <div>
+                <span> П = </span><span id="mistakeView"></span>
+            </div>
+        </div>
 
+        <div class="row">
+            <div>
+                <var>α<sub>a</sub></var> = <span id="alphaAView"></span>
+            </div>
+        </div>
+    </div>
 
+    <!-- Raw Result -->
+    <div id="raw">
+        <var>α<sub>a</sub></var> = <span id="alphaARawView"></span>
+    </div>
+
+    <div class="row">
+        <div>
+            <label for="toggleSwitch">Детальний розрахунок</label>
+            <label class="switch">
+                <input type="checkbox" id="toggleSwitch" />
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Calculate -->
+    <button id="submit" class="calculate">Calculate</button>
 </body>
 
 <script>
     document.getElementById('submit').addEventListener('click', handleCalculate);
+    document.getElementById('toggleSwitch').addEventListener('click', handleDetails);
+
+    function handleDetails(e) {
+        let details = document.getElementById('details');
+        let raw = document.getElementById('raw');
+
+        if (e.target.checked) {
+            raw.style.display = 'none';
+            details.style.display = 'block';
+        }
+        else {
+            raw.style.display = 'block';
+            details.style.display = 'none';
+        }
+    }
 
 
     function handleCalculate(e) {
         let year = +document.getElementById('year').value;
         let gradus = +document.getElementById('gradus').value;
-        let minute = +document.getElementById('minute').value;
+        let minuta = +document.getElementById('minuta').value;
         let aplhaB = +document.getElementById('aplhaB').value;
         let yearlyGradus = +document.getElementById('yearlyGradus').value;
-        let yearlyMinute = +document.getElementById('yearlyMinute').value;
+        let yearlyMinuta = +document.getElementById('yearlyMinuta').value;
         let direction = document.getElementById('direction').value;
         let yearlyDirection = document.getElementById('yearlyDirection').value;
 
         let alphaAM = aplhaB > 3000 ? aplhaB - 3000 : aplhaB + 3000;
-        document.getElementById('alphaAMValue').innerText = aplhaB + ` ${aplhaB > 3000 ? '-' : '+'} ` + 3000 + ' = ' + alphaAM;
+        setAlphaAMView(aplhaB, alphaAM);
 
         let yearsPassed = new Date().getFullYear() - year;
-        let inclinationInMinutes = (direction == 'west' ? -1 : 1) * (gradus * 60 + minute) +
-            (yearsPassed * (yearlyDirection == 'west' ? -1 : 1) * (yearlyGradus * 60 + yearlyMinute));
+        let inclinationInMinutes = (direction == 'west' ? -1 : 1) * (gradus * 60 + minuta) +
+            (yearsPassed * (yearlyDirection == 'west' ? -1 : 1) * (yearlyGradus * 60 + yearlyMinuta));
 
         let mistake = inclinationInMinutes / 3.6;
-
-        document.getElementById('mistakeValue').innerText =
-            (direction == 'west' ? '-' : '') + formatGragusAndMinute(gradus, minute) + ' + '
-            + '(' + yearsPassed + ' * ' + (yearlyDirection == 'west' ? '-' : '') + formatGragusAndMinute(yearlyGradus, yearlyMinute) + ') = '
-
-            + formatGragusAndMinute(parseInt(inclinationInMinutes / 60), inclinationInMinutes - parseInt(inclinationInMinutes / 60) * 60) + ' = '
-            + inclinationInMinutes + '\' / 3.6\' = ' + mistake + ' = ' + Math.round(mistake);
+        setMistakeView(direction, gradus, minuta, yearsPassed, yearlyDirection, yearlyGradus, yearlyMinuta, inclinationInMinutes, mistake);
 
         mistake = Math.round(mistake);
 
@@ -91,20 +326,33 @@
         let alphaAInMinutes = alphaA * 3.6;
         let alphaAInGraduses = alphaAInMinutes / 60;
 
-        document.getElementById('alphaAValue').innerText =
-            alphaAM + (direction == 'west' ? ' - (' : ' + ') + mistake + (direction == 'west' ? ')' : '') + ' = ' + alphaA + ' * 3.6\' = '
-            + alphaAInMinutes + '\' / 60° = ' + alphaAInGraduses + '° = ' + alphaAInGraduses.toFixed(1) + '°';
+        setAlphaAViews(alphaAM, direction, mistake, alphaA, alphaAInMinutes, alphaAInGraduses);
 
+        function formatGragusAndMinuta(gradus, minuta) {
+            return gradus + '°' + minuta.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + '′';
+        }
 
+        function setAlphaAMView(aplhaB, alphaAM) {
+            document.getElementById('alphaAMView').innerText = aplhaB + ` ${aplhaB > 3000 ? '-' : '+'} ` + 3000 + ' = ' + alphaAM;
+        }
 
+        function setMistakeView(direction, gradus, minuta, yearsPassed, yearlyDirection, yearlyGradus, yearlyMinuta, inclinationInMinutes, mistake) {
+            document.getElementById('mistakeView').innerText =
+                (direction == 'west' ? '-' : '') + formatGragusAndMinuta(gradus, minuta) + ' + '
+                + '(' + yearsPassed + ' * ' + (yearlyDirection == 'west' ? '-' : '') + formatGragusAndMinuta(yearlyGradus, yearlyMinuta) + ') = '
 
+                + formatGragusAndMinuta(parseInt(inclinationInMinutes / 60), inclinationInMinutes - parseInt(inclinationInMinutes / 60) * 60) + ' = '
+                + inclinationInMinutes + '′ / 3.6′ = ' + mistake.toFixed(4) + ' = ' + Math.round(mistake);
+        }
 
+        function setAlphaAViews(alphaAM, direction, mistake, alphaA, alphaAInMinutes, alphaAInGraduses) {
+            document.getElementById('alphaAView').innerText =
+                alphaAM + (direction == 'west' ? ' - (' : ' + ') + mistake + (direction == 'west' ? ')' : '') + ' = ' + alphaA + ' * 3.6′ = '
+                + alphaAInMinutes.toFixed(4) + '′ / 60° = ' + alphaAInGraduses.toFixed(4) + '° = ' + alphaAInGraduses.toFixed(1) + '°';
+
+            document.getElementById('alphaARawView').innerText = alphaAInGraduses.toFixed(1) + '°';
+        }
     }
-
-    function formatGragusAndMinute(gradus, minute) {
-        return gradus + '°' + minute.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + '\'';
-    }
-
 
 </script>
 
