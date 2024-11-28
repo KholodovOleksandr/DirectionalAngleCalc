@@ -232,6 +232,71 @@
                 transform: rotate(360deg);
             }
         }
+
+        .popover {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .popover-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .popover-title {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .popover-close {
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #555;
+            transition: color 0.2s ease;
+        }
+
+        .popover-close:hover {
+            color: #e63946;
+        }
+
+        .popover-content {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .popover-content li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .popover-content li:last-child {
+            border-bottom: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -326,6 +391,14 @@
             <a href="https://x.com/okh_ua" target="_blank">Зворотній зв'язок</a>
             <span id="version">v0.1</span>
         </footer>
+    </div>
+    <div id="mypopover" popover="manual" class="popover">
+        <div class="popover-header">
+            <span class="popover-title">Доступна нова версія</span>
+            <button class="popover-close" popovertarget="mypopover">×</button>
+        </div>
+        <ul class="popover-content">
+        </ul>
     </div>
 
     <script>
@@ -453,23 +526,33 @@
         function handleVersionList(r) {
             const currentV = document.getElementById('version').innerText.replace('v', '').trim();
             let newVersions = [];
-            let flag = false;
+            let markNextAsNew = false;
+            
             let sortedVersions = r.versions.map(a => a.v.split('.').map(n => +n + 100000).join('.')).sort()
                 .map(a => a.split('.').map(n => +n - 100000).join('.'));
 
-            for (let i; i < sortedVersions.length; i++) {
-                if (flag) {
+            for (let i = 0; i < sortedVersions.length; i++) {
+                if (markNextAsNew) {
                     newVersions.push({
                         v: sortedVersions[i],
-                        description: r.versions.filter(s => s.v === sortedVersions[i]).description
+                        description: r.versions.filter(s => s.v === sortedVersions[i])[0].description
                     })
                 }
                 if (sortedVersions[i] === currentV) {
-                    flag = true;
+                    markNextAsNew = true;
                 }
             }
 
-            alert(`New version is awailable ${sortedVersions.map(s => s.v + ' ' + s.description).join(';')}`)
+            if (newVersions.length) {
+                document.getElementsByClassName('popover-title')[0].innerText += ` (поточна ${currentV})`;
+                let ul = document.getElementsByClassName('popover-content')[0];
+                newVersions.forEach(v => {
+                    let li = document.createElement('li');
+                    li.innerText = `v${v.v} - ${v.description}`;
+                    ul.appendChild(li);
+                })
+                document.getElementById('mypopover').showPopover();
+            }
         }
 
     </script>
