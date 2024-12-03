@@ -530,14 +530,15 @@
             let newVersions = [];
             let markNextAsNew = false;
 
-            let sortedVersions = r.versions.map(a => a.v.split('.').map(n => +n + 100000).join('.')).sort()
+            let versions = r.antena || r.versions;
+            let sortedVersions = versions.map(a => a.v.split('.').map(n => +n + 100000).join('.')).sort()
                 .map(a => a.split('.').map(n => +n - 100000).join('.'));
 
             for (let i = 0; i < sortedVersions.length; i++) {
                 if (markNextAsNew) {
                     newVersions.push({
                         v: sortedVersions[i],
-                        description: r.versions.filter(s => s.v === sortedVersions[i])[0].description
+                        description: versions.filter(s => s.v === sortedVersions[i])[0].description
                     })
                 }
                 if (sortedVersions[i] === currentV) {
